@@ -1,0 +1,81 @@
+function [] = loadGroundTruth(filePath, gTruthName)
+%Load ground truth object and try to display an 
+%image with colored pixel labels
+labeledDataDirName = 'labeled';
+
+%Check if a labeled folder exists
+if ~isdir(fullfile(filePath, labeledDataDirName))
+    fprintf(join(['A label folder not found in the path: ', filePath, '\n']))
+    return;
+end
+
+filePath = fullfile(filePath, labeledDataDirName);
+
+if filePath(end) == '/'
+   filePath(end) = ''
+end
+
+%Accepted labeled image folder names
+labelDirNames = {'PixelLabelData', 'Labeled_Images'};
+
+if nargin<2
+   gTruthName = 'gTruth.mat';
+end
+
+fileToLoad = fullfile(filePath, gTruthName);
+matFileExists = 0;
+
+if exist(fileToLoad)
+warning(''); % Clear last warning message
+gTruth = load(fileToLoad);
+gTruth = gTruth.('gTruth');
+[~, warnId] = lastwarn;
+matFileExists = 1;
+    if isempty(warnId)
+        %The founded file gave no warnings!
+        fprintf('Ground truth .mat file found and loaded with no issues! \n');
+    return;
+    end
+end
+
+   %Get the paths of all images in the Labeled_images folder
+   files = dir(filePath);
+   subDirs = [files.isdir];
+   subDirs = files(subDirs);
+   index = contains({subDirs.name}, labelDirNames);
+   if ~isempty(subDirs(index)) && length(subDirs(index)) == 1
+      labelFilesFolder = fullfile(filePath, subDirs(index).name)
+   else
+       fprintf('Please make sure that a single folder with labeled images exists in the label directory! \n');
+       return;
+   end
+   
+   labeledImgNames  = dir(fullfile(labelFilesFolder, '*.jpg'));
+   labeledImgPaths = fullfile(labelFilesFolder, {labeledImgNames.name})';
+   labeledImgPaths = natsort(labeledImgPaths);
+   
+   
+   %Get paths of original images
+   
+   DinPath = strfind(filePath, '\');
+   OrgImagesPaths = filePath(1:DinPath(end) - 1)
+   OrgImagePaths = fullfile(labelFilesFolder, {labeledImgNames.name})';
+   
+   
+   
+   
+   
+
+labelDefinitions = gTruth.LabelDefinitions
+dataFilePaths = gTruth.DataSource.Source
+labelFilePaths = gTruth.LabelData.PixelLabelData
+
+imgNum = 1;
+
+imgOrg = imread(dataFilePaths{imgNum});
+imgLabeled = imread(labelFilePaths{imgNum});
+
+
+
+end
+

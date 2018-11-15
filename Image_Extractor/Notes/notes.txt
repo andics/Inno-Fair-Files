@@ -1,0 +1,5 @@
+RAW files contain information about amount of light exposure at each pixel, which is the most pure form of unprocessed data.
+The use of such unprocessed data would require a special algorithm to generate a way in which to associate this information
+with pixel color and so to produce a visually observable image.
+
+Better to use already generated observable images in TIF formats. 

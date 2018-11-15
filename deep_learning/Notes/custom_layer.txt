@@ -1,0 +1,20 @@
+Add a custom feature extraction layer to the segmentation neural network.
+
+
+Firstly, seperate the bone from the background using a simple curve fittning algorithm.
+Within the bone, extract each 'bubble' made of black pixels using a hole filling algorithm. 
+Whenever a position is filled from the algorithm, it is a bubble.
+
+From all of those bubbles, only a few are parts of the suture. The others will
+just be the inside texture of the bone. the question is; how do we find the bubbles
+belonging to the suture.
+
+For each bubble try to fit a circle around it. Create a map of circle crossings.
+Record the XY values of the circle crossings which are in the provided  by the training set
+suture region. Do this for all of the images provided in the database.
+The result would be pattern detector which would pick on similarlly looking circle crossings on future images, 
+and will bias the pixels in the coresponding circles. 
+
+This idea expoloits the oval shaped nature of each bubble in the bone, and uses it to further limit the
+possible positions at which the suture might be
+
